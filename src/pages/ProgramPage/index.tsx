@@ -134,7 +134,8 @@ const ProgramPage: React.VFC = () => {
           : programPackage.programs.some(program => program.id === programId && program.isDelivered),
       )
     : false
-
+  console.log('load position')
+  console.log(window.scrollY)
   return (
     <DefaultLayout white footerBottomSpace={program.plans.length > 1 ? '60px' : '132px'}>
       <ProgramPageHelmet program={program} onLoaded={() => setMetaLoaded(true)} />

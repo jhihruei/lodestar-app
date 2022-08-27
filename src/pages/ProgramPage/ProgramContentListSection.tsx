@@ -73,8 +73,13 @@ const ProgramContentListSection: React.VFC<{
   const { currentMemberId, isAuthenticated } = useAuth()
   const { setVisible: setAuthModalVisible } = useContext(AuthModalContext)
   const { enrolledProgramIds } = useEnrolledProgramIds(currentMemberId || '')
+  console.log(`enrolled program id: ${enrolledProgramIds}`)
 
   const isEnrolled = enrolledProgramIds.includes(program.id)
+
+  window.addEventListener('scroll', (event) => {
+    console.log(event)
+  })
 
   return (
     <>
@@ -89,13 +94,18 @@ const ProgramContentListSection: React.VFC<{
 
             {programContentSection.contents.map(programContent => (
               <ProgramContentItem
+                id={btoa(programContent.id)}
                 key={programContent.id}
                 isEnrolled={isEnrolled}
                 onClick={() => {
+                  console.log('click item')
+                  console.log(programContent)
+                  console.log(window.scrollY)
                   if (isEnrolled) {
                     history.push(`/programs/${program.id}/contents/${programContent.id}?back=programs_${program.id}`)
                   }
                   if (programContent.displayMode === DisplayModeEnum.loginToTrial && !isAuthenticated) {
+                    console.log('show auth modal')
                     setAuthModalVisible?.(true)
                   }
                 }}
