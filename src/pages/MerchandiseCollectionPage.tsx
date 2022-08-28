@@ -1,7 +1,7 @@
 import { Icon } from '@chakra-ui/icons'
 import { HStack, useRadioGroup } from '@chakra-ui/react'
 import { flatten, prop, sortBy, uniqBy } from 'ramda'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import ReactGA from 'react-ga'
 import { defineMessages, useIntl } from 'react-intl'
 import { Link } from 'react-router-dom'
@@ -55,7 +55,7 @@ const MerchandiseCollectionPage: React.VFC = () => {
   const [isPhysical] = useQueryParam('isPhysical', BooleanParam)
   const { merchandises, merchandiseTags } = useMerchandiseCollection({
     search: keyword || '',
-    isPhysical: isPhysical !== undefined ? !!isPhysical : undefined,
+    // isPhysical: isPhysical !== undefined ? !!isPhysical : undefined,
     categories: categories ? categories : undefined,
   })
   const { pageTitle } = useNav()
@@ -77,11 +77,36 @@ const MerchandiseCollectionPage: React.VFC = () => {
     uniqBy(category => category.id, flatten(filteredMerchandises.map(merchandise => merchandise.categories || []))),
   )
 
-  const options = [
-    formatMessage(commonMessages.ui.all),
-    formatMessage(commonMessages.ui.physical),
-    formatMessage(commonMessages.ui.virtual),
-  ]
+  const options = useMemo(() => {
+    console.log(merchandises)
+    const hasPhysical = merchandises.some(m => m.isPhysical)
+    const hasVirtual = merchandises.some(m => !m.isPhysical)
+
+    if (hasPhysical && hasVirtual) {
+      return [
+        formatMessage(commonMessages.ui.all),
+        formatMessage(commonMessages.ui.physical),
+        formatMessage(commonMessages.ui.virtual),
+      ]
+    } else {
+      return [
+        formatMessage(commonMessages.ui.all),
+      ]
+    }
+  }, [merchandises, formatMessage])
+
+  // const hasPhysical = useMemo(() => {
+  //   return merchandises.some(m => m.isPhysical)
+  // }, [merchandises]);
+  // const hasVirtual = useMemo(() => {
+  //   return merchandises.some(m => !m.isPhysical)
+  // }, [merchandises]);
+
+  // const options = [
+  //   formatMessage(commonMessages.ui.all),
+  //   formatMessage(commonMessages.ui.physical),
+  //   formatMessage(commonMessages.ui.virtual),
+  // ]
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'isPhysical',
