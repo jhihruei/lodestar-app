@@ -87,7 +87,7 @@ export const LocaleProvider: React.FC = ({ children }) => {
         },
       }}
     >
-      <IntlProvider defaultLocale="zh" locale={currentLocale} messages={localeMessages}>
+      <IntlProvider defaultLocale="zh" locale={currentLocale} messages={localeMessages} onError={() =>{}} >
         {children}
       </IntlProvider>
     </LocaleContext.Provider>
